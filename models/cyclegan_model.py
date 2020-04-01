@@ -179,8 +179,9 @@ class cycleGAN(nn.Module):
         self.loss_G = self.loss_G_A + self.loss_G_B + self.loss_cycle_A + self.loss_cycle_B + self.loss_idt_A + self.loss_idt_B
         self.loss_G.backward()
 
+    """ 
     def optimize_parameters(self):
-        """Calculate losses, gradients, and update network weights; called in every training iteration"""
+        ""Calculate losses, gradients, and update network weights; called in every training iteration""
         # forward
         self.forward()      # compute fake images and reconstruction images.
         # G_A and G_B
@@ -194,6 +195,7 @@ class cycleGAN(nn.Module):
         self.backward_D_A()      # calculate gradients for D_A
         self.backward_D_B()      # calculate graidents for D_B
         self.optimizer_D.step()  # update D_A and D_B's weights
+    """
 
     def setup(self, n_epochs, n_epochs_decay, epoch_count=1, load_iter=0, epoch=0, verbose=False):
         """Load and print networks; create schedulers"""
