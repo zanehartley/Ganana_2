@@ -11,7 +11,8 @@ class cycleGAN(nn.Module):
     """
 
     def __init__(self, 
-        device, 
+        device,
+        gpu_ids=[0],
         isTrain=True, 
         checkpoints_dir='./checkpoints',
         name='experiment_name',

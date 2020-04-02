@@ -80,3 +80,4 @@
 (epoch: 1, iters: 4500, time: 0.308, data: 0.000) D_A: 0.147 G_A: 0.379 cycle_A: 0.285 idt_A: 0.154 D_B: 0.350 G_B: 0.183 cycle_B: 0.431 idt_B: 0.110 
 (epoch: 1, iters: 4600, time: 0.331, data: 0.000) D_A: 0.204 G_A: 0.477 cycle_A: 0.405 idt_A: 0.109 D_B: 0.254 G_B: 0.302 cycle_B: 0.210 idt_B: 0.148 
 (epoch: 1, iters: 4700, time: 0.299, data: 0.000) D_A: 0.112 G_A: 0.552 cycle_A: 0.273 idt_A: 0.233 D_B: 0.137 G_B: 0.802 cycle_B: 0.544 idt_B: 0.103 
+================ Training Loss (Thu Apr  2 10:46:26 2020) ================
