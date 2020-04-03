@@ -114,7 +114,7 @@ class cycleGAN(nn.Module):
 
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
-        print(self.real_A.shape)
+        #print(self.real_A.shape)
         self.fake_B = self.netG_A(self.real_A)  # G_A(A)
         self.rec_A = self.netG_B(self.fake_B)   # G_B(G_A(A))
         self.fake_A = self.netG_B(self.real_B)  # G_B(B)
@@ -255,3 +255,21 @@ class cycleGAN(nn.Module):
             if isinstance(name, str):
                 errors_ret[name] = float(getattr(self, 'loss_' + name))  # float(...) works for both scalar tensor and float number
         return errors_ret
+
+    def save_networks(self, epoch):
+        """Save all the networks to the disk.
+
+        Parameters:
+            epoch (int) -- current epoch; used in the file name '%s_net_%s.pth' % (epoch, name)
+        """
+        for name in self.model_names:
+            if isinstance(name, str):
+                save_filename = '%s_net_%s.pth' % (epoch, name)
+                save_path = os.path.join(self.save_dir, save_filename)
+                net = getattr(self, 'net' + name)
+
+                if len(self.gpu_ids) > 0 and torch.cuda.is_available():
+                    torch.save(net.module.cpu().state_dict(), save_path)
+                    net.cuda(self.gpu_ids[0])
+                else:
+                    torch.save(net.cpu().state_dict(), save_path)
