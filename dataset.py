@@ -95,6 +95,7 @@ class GananaDataset(Dataset):
 
         V = np.memmap(V_path, dtype='uint8', mode='r').__array__()
         V = V.reshape(256, 256, 128)
+        V = np.moveaxis(V, [0, 1, 2], [-2, -1, -3])
         V = V / 255.0
 
         return {'A': A, 'B': B, 'V': V, 'A_paths': A_path, 'B_paths': B_path}
