@@ -69,7 +69,7 @@ class Visualiser():
             print('create web directory %s...' % self.web_dir)
             util.mkdirs([self.web_dir, self.img_dir])
         # create a logging file to store training losses
-        self.log_name = os.path.join(checkpoints_dir, name, 'loss_log.txt')
+        self.log_name = os.path.join(checkpoints_dir, name, 'loss_log.out')
         with open(self.log_name, "a") as log_file:
             now = time.strftime("%c")
             log_file.write('================ Training Loss (%s) ================\n' % now)
