@@ -1,0 +1,301 @@
+INFO: Using device cuda:0
+INFO: A
+INFO: B
+INFO: C
+INFO: Dataloader created, dataset size: 40000
+INFO: CycleGAN Network:
+
+INFO: Unet Network:
+	3 input channels
+	128 output channels (classes)
+	Bilinear upscaling
+INFO: Starting training:
+    Epochs:          100
+    Batch size:      1
+    Learning rate:   0.0002
+    Training size:   40000
+    Device:          cuda
+
+INFO: Starting Epoch 1 at time 1586168345.4597187
+Start
+/db/pszaj/proj-3d-plant/volumetric-cyclegan/trainA
+/db/pszaj/proj-3d-plant/volumetric-cyclegan/trainB
+1
+2
+3
+
+Number of Synthetic Images:	39997
+
+Number of Real Images:	40000
+
+Number of Volumes:	39997
+initialize network with normal
+initialize network with normal
+initialize network with normal
+initialize network with normal
+---------- Networks initialized -------------
+[Network G_A] Total number of parameters : 11.378 M
+[Network G_B] Total number of parameters : 11.378 M
+[Network D_A] Total number of parameters : 2.765 M
+[Network D_B] Total number of parameters : 2.765 M
+-----------------------------------------------
+[Network Unet] Total number of parameters : 53.570 M
+create web directory ./checkpoints/Ganana_Test/web...
+INFO: 0.22443576157093048
+INFO: 0.14007574319839478
+INFO: 0.07638594508171082
+INFO: 0.12008103728294373
+INFO: 0.07599498331546783
+INFO: 0.14859639108181
+INFO: 0.05046335607767105
+INFO: 0.07788784801959991
+INFO: 0.05234646797180176
+INFO: 0.06754150986671448
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.529411792755127]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.6473031044006348]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.09531816095113754, 28.367074966430664]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.45698368549346924, 12.027003288269043]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.08400946110486984
+INFO: 0.04544492065906525
+INFO: 0.09712554514408112
+INFO: 0.07761839032173157
+INFO: 0.09900012612342834
+INFO: 0.06289602816104889
+INFO: 0.11909138411283493
+INFO: 0.07082408666610718
+INFO: 0.03664668649435043
+INFO: 0.05743281543254852
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.6941176652908325]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.6621020436286926]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.056402839720249176, 24.335023880004883]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.18118879199028015, 11.65190315246582]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.05407557636499405
+INFO: 0.09001463651657104
+INFO: 0.06946571171283722
+INFO: 0.07090050727128983
+INFO: 0.13518887758255005
+INFO: 0.03594367578625679
+INFO: 0.09831759333610535
+INFO: 0.04508645087480545
+INFO: 0.12378719449043274
+INFO: 0.18407875299453735
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.37254905700683594]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.8072407245635986]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0051367441192269325, 24.51580810546875]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.04473637044429779, 12.522804260253906]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.06099962443113327
+INFO: 0.09584550559520721
+INFO: 0.027646465227007866
+INFO: 0.05567213147878647
+INFO: 0.041476279497146606
+INFO: 0.16942840814590454
+INFO: 0.0660855770111084
+INFO: 0.0485675074160099
+INFO: 0.054374370723962784
+INFO: 0.13116201758384705
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.6000000238418579]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.6577349305152893]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0005241805338300765, 15.8757963180542]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.013618892058730125, 7.912778854370117]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.04994184151291847
+INFO: 0.12818263471126556
+INFO: 0.055351268500089645
+INFO: 0.08841975033283234
+INFO: 0.14212453365325928
+INFO: 0.025895999744534492
+INFO: 0.0361146405339241
+INFO: 0.026907507330179214
+INFO: 0.029980897903442383
+INFO: 0.040255624800920486
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.301960825920105]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.777548611164093]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.017024308443069458, 29.00054931640625]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0955832451581955, 12.765090942382812]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.05171240493655205
+INFO: 0.13964444398880005
+INFO: 0.11542290449142456
+INFO: 0.026912637054920197
+INFO: 0.048146411776542664
+INFO: 0.030445866286754608
+INFO: 0.0965324267745018
+INFO: 0.037185896188020706
+INFO: 0.10177896916866302
+INFO: 0.08790464699268341
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.458823561668396]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.9577516317367554]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0023131247144192457, 25.143665313720703]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.020583689212799072, 15.428119659423828]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.07202595472335815
+INFO: 0.030963469296693802
+INFO: 0.048005636781454086
+INFO: 0.03562447428703308
+INFO: 0.07404998689889908
+INFO: 0.04656998813152313
+INFO: 0.033913057297468185
+INFO: 0.08610321581363678
+INFO: 0.026319855824112892
+INFO: 0.062185101211071014
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.35686278343200684]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.7626926302909851]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0021987135987728834, 27.325939178466797]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.026899538934230804, 13.694028854370117]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.05713482201099396
+INFO: 0.05584375932812691
+INFO: 0.15647979080677032
+INFO: 0.07228369265794754
+INFO: 0.038534969091415405
+INFO: 0.09216663986444473
+INFO: 0.023668773472309113
+INFO: 0.04019162431359291
+INFO: 0.1458815038204193
+INFO: 0.07538709789514542
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.6000000238418579]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.7087536454200745]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0016870469553396106, 26.971113204956055]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.03932095691561699, 13.710779190063477]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.16022387146949768
+INFO: 0.08039868623018265
+INFO: 0.034898869693279266
+INFO: 0.08295559138059616
+INFO: 0.055087439715862274
+INFO: 0.027347443625330925
+INFO: 0.02030322514474392
+INFO: 0.04417702555656433
+INFO: 0.06034037470817566
+INFO: 0.09082379937171936
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.07450985908508301]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.8470882773399353]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0014747915556654334, 26.06916046142578]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.03008956089615822, 14.898640632629395]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.03499407321214676
+INFO: 0.08215824514627457
+INFO: 0.02734113298356533
+INFO: 0.03101414069533348
+INFO: 0.04040875285863876
+INFO: 0.035441964864730835
+INFO: 0.12047155946493149
+INFO: 0.10068154335021973
+INFO: 0.05104433745145798
+INFO: 0.03797551617026329
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.6627451181411743]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.7724277973175049]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0026855061296373606, 31.01007843017578]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0419771671295166, 12.38793659210205]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.08162739127874374
+INFO: 0.2254941612482071
+INFO: 0.06154444068670273
+INFO: 0.11030915379524231
+INFO: 0.11230602115392685
+INFO: 0.04615575075149536
+INFO: 0.03439188003540039
+INFO: 0.02854599617421627
+INFO: 0.1557086557149887
+INFO: 0.025342747569084167
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.30980396270751953]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.7910687923431396]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.00017382476653438061, 30.114748001098633]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0059142764657735825, 16.939027786254883]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.05557706952095032
+INFO: 0.09126514941453934
+INFO: 0.06059076264500618
+INFO: 0.13293029367923737
+INFO: 0.043049026280641556
+INFO: 0.04404383897781372
+INFO: 0.04686157405376434
+INFO: 0.11291496455669403
+INFO: 0.027083709836006165
+INFO: 0.027812639251351357
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.45098042488098145]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.7755378484725952]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.00023975428484845906, 28.406354904174805]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.033769410103559494, 14.501629829406738]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.060127176344394684
+INFO: 0.024624478071928024
+INFO: 0.04816155135631561
+INFO: 0.06133886054158211
+INFO: 0.08952914923429489
+INFO: 0.03022373653948307
+INFO: 0.03400849923491478
+INFO: 0.057367902249097824
+INFO: 0.03873217850923538
+INFO: 0.09825824946165085
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.06666672229766846]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.6973355412483215]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0009191676508635283, 26.086536407470703]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.030745012685656548, 12.955373764038086]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.047818124294281006
+INFO: 0.11565797030925751
+INFO: 0.02393987402319908
+INFO: 0.03224034607410431
+INFO: 0.06935647130012512
+INFO: 0.045163851231336594
+INFO: 0.11192000657320023
+INFO: 0.07054898887872696
+INFO: 0.07238441705703735
+INFO: 0.057235777378082275
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.6784313917160034]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.6780032515525818]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0007722043665125966, 26.408803939819336]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.016013752669095993, 10.936020851135254]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.05076000466942787
+INFO: 0.1168539747595787
+INFO: 0.053067415952682495
+INFO: 0.05878593772649765
+INFO: 0.08200542628765106
+INFO: 0.04131133109331131
+INFO: 0.06385163217782974
+INFO: 0.02944064699113369
+INFO: 0.04594380408525467
+INFO: 0.08878389000892639
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.12941181659698486]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.7137434482574463]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0004030496347695589, 30.281278610229492]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.015028227120637894, 13.87079906463623]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.0503900907933712
+INFO: 0.039375029504299164
+INFO: 0.08406083285808563
+INFO: 0.07032881677150726
+INFO: 0.10004407912492752
+INFO: 0.04827882722020149
+INFO: 0.07875446230173111
+INFO: 0.09634970128536224
+INFO: 0.054327741265296936
+INFO: 0.033440034836530685
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.19215691089630127]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.655227780342102]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0007182883564382792, 26.707534790039062]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.015149186365306377, 12.206649780273438]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.05068524181842804
+INFO: 0.08242671936750412
+INFO: 0.030864622443914413
+INFO: 0.04451560601592064
+INFO: 0.09438429027795792
+INFO: 0.06657620519399643
+INFO: 0.04032059386372566
+INFO: 0.04903975501656532
+INFO: 0.06876010447740555
+INFO: 0.12514299154281616
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.5686274766921997]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.7919890880584717]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.0005535902455449104, 29.049772262573242]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.02760424092411995, 13.391321182250977]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.06331125646829605
+INFO: 0.10329046100378036
+INFO: 0.03308458253741264
+INFO: 0.030317673459649086
+INFO: 0.15257740020751953
+INFO: 0.07012254744768143
+INFO: 0.05413680523633957
+INFO: 0.04709295183420181
+INFO: 0.024935629218816757
+INFO: 0.03608350828289986
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.20784318447113037]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [-1.0, 0.8087881803512573]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.00012478134885895997, 27.99449348449707]. Convert image to uint8 prior to saving to suppress this warning.
+WARNING: Lossy conversion from float32 to uint8. Range [0.021890174597501755, 12.679567337036133]. Convert image to uint8 prior to saving to suppress this warning.
+INFO: 0.06860292702913284
+INFO: 0.07107475399971008
+INFO: 0.0815463736653328
+INFO: 0.1593935340642929
+INFO: 0.07231932878494263
+INFO: 0.04842916503548622

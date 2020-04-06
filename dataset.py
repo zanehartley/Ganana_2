@@ -44,7 +44,6 @@ def make_dataset(dir, max_dataset_size=float("inf"), vol=False):
                     images.append(path)
     return images[:min(max_dataset_size, len(images))]
 
-
 class GananaDataset(Dataset):
     """
     Dataset Structure    
@@ -59,15 +58,18 @@ class GananaDataset(Dataset):
     """
 
     def __init__(self, dataroot, input_nc=3, output_nc=3):
-        
+        print("Start")
         self.dir_A = os.path.join(dataroot, 'trainA')  # create a path '/path/to/data/trainA'
         self.dir_B = os.path.join(dataroot, 'trainB')  # create a path '/path/to/data/trainB'
         print(self.dir_A)
         print(self.dir_B)
 
         self.A_paths = sorted(make_dataset(self.dir_A))   # load images from '/path/to/data/trainA'
+        print("1")
         self.B_paths = sorted(make_dataset(self.dir_B))    # load images from '/path/to/data/trainB'
+        print("2")
         self.V_paths = sorted(make_dataset(self.dir_A, vol=True))
+        print("3")
         self.A_size = len(self.A_paths)  # get the size of dataset A
         self.B_size = len(self.B_paths)  # get the size of dataset B
         self.V_size = len(self.V_paths)

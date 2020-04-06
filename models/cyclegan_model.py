@@ -180,9 +180,9 @@ class cycleGAN(nn.Module):
         # Backward cycle loss || G_A(G_B(B)) - B||
         self.loss_cycle_B = self.criterionCycle(self.rec_B, self.real_B) * lambda_B
         # combined loss and calculate gradients
-        self.loss_G = self.loss_G_A + self.loss_G_B + self.loss_cycle_A + self.loss_cycle_B + self.loss_idt_A + self.loss_idt_B + self.loss_volumetric
-        print(self.loss_G)
-        self.loss_G.backward()
+        self.loss_G = self.loss_G_A + self.loss_G_B + self.loss_cycle_A + self.loss_cycle_B + self.loss_idt_A + self.loss_idt_B
+        #print(self.loss_G)
+        self.loss_G.backward(retain_graph=True)
 
     """ 
     def optimize_parameters(self):
