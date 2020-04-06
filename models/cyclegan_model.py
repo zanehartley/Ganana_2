@@ -36,7 +36,8 @@ class cycleGAN(nn.Module):
         lr=0.0002,
         beta1=0.5,
         direction='AtoB',
-        continue_train=False
+        continue_train=False,
+        lr_policy = 'linear'
         ):
 
         super(cycleGAN, self).__init__()
@@ -55,6 +56,7 @@ class cycleGAN(nn.Module):
         self.lambda_B = lambda_B
         self.direction = direction
         self.continue_train = continue_train
+        self.lr_policy = 'linear'
         self.loss_volumetric = 0.0
 
         # specify the training losses you want to print out. The training/test scripts will call <BaseModel.get_current_losses>
@@ -179,6 +181,7 @@ class cycleGAN(nn.Module):
         self.loss_cycle_B = self.criterionCycle(self.rec_B, self.real_B) * lambda_B
         # combined loss and calculate gradients
         self.loss_G = self.loss_G_A + self.loss_G_B + self.loss_cycle_A + self.loss_cycle_B + self.loss_idt_A + self.loss_idt_B + self.loss_volumetric
+        print(self.loss_G)
         self.loss_G.backward()
 
     """ 
@@ -273,3 +276,11 @@ class cycleGAN(nn.Module):
                     net.cuda(self.gpu_ids[0])
                 else:
                     torch.save(net.cpu().state_dict(), save_path)
+
+    def update_learning_rate(self):
+        """Update learning rates for all the networks; called at the end of every epoch"""
+        for scheduler in self.schedulers:
+            if self.lr_policy == 'plateau':
+                scheduler.step(self.metric)
+            else:
+                scheduler.step()

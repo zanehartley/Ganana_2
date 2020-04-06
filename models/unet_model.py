@@ -34,3 +34,9 @@ class UNet(nn.Module):
         x = self.up4(x, x1)
         logits = self.outc(x)
         return logits
+
+    def print_network(self):
+        num_params = 0
+        for param in self.parameters():
+            num_params += param.numel()
+        print('[Network Unet] Total number of parameters : %.3f M' % ( num_params / 1e6))
