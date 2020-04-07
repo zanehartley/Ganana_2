@@ -58,24 +58,20 @@ class GananaDataset(Dataset):
     """
 
     def __init__(self, dataroot, input_nc=3, output_nc=3):
-        print("Start")
         self.dir_A = os.path.join(dataroot, 'trainA')  # create a path '/path/to/data/trainA'
         self.dir_B = os.path.join(dataroot, 'trainB')  # create a path '/path/to/data/trainB'
         print(self.dir_A)
         print(self.dir_B)
 
         self.A_paths = sorted(make_dataset(self.dir_A))   # load images from '/path/to/data/trainA'
-        print("1")
         self.B_paths = sorted(make_dataset(self.dir_B))    # load images from '/path/to/data/trainB'
-        print("2")
         self.V_paths = sorted(make_dataset(self.dir_A, vol=True))
-        print("3")
         self.A_size = len(self.A_paths)  # get the size of dataset A
         self.B_size = len(self.B_paths)  # get the size of dataset B
         self.V_size = len(self.V_paths)
         print("\nNumber of Synthetic Images:\t" + str(self.A_size))
         print("\nNumber of Real Images:\t" + str(self.B_size))
-        print("\nNumber of Volumes:\t" + str(self.V_size))
+        print("\nNumber of Volumes:\t" + str(self.V_size) + "\n")
 
         #input_nc = channels     # get the number of channels of input image
         #output_nc = channels      # get the number of channels of output image
