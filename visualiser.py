@@ -53,7 +53,7 @@ class Visualiser():
     def __init__(self, 
             isTrain = True,
             no_html = False,
-            checkpoints_dir = './checkpoints',
+            checkpoints_dir = './checkpoints/',
             name = 'experiment_name'
             ):
         """Initialize the Visualiser class

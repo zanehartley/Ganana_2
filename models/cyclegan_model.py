@@ -14,7 +14,7 @@ class cycleGAN(nn.Module):
         device,
         gpu_ids=[0],
         isTrain=True, 
-        checkpoints_dir='./checkpoints',
+        checkpoints_dir='./checkpoints/',
         name='experiment_name',
         preprocess='resize_and_crop',
         lambda_identity=0.5,
