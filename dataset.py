@@ -57,11 +57,13 @@ class GananaDataset(Dataset):
     |   |   ├── xxx.png
     """
 
-    def __init__(self, dataroot, input_nc=3, output_nc=3):
+    def __init__(self, dataroot, input_nc=3, output_nc=3, train=True):
         self.dir_A = os.path.join(dataroot, 'trainA')  # create a path '/path/to/data/trainA'
         self.dir_B = os.path.join(dataroot, 'trainB')  # create a path '/path/to/data/trainB'
         print(self.dir_A)
         print(self.dir_B)
+
+        self.train = train
 
         self.A_paths = sorted(make_dataset(self.dir_A))   # load images from '/path/to/data/trainA'
         self.B_paths = sorted(make_dataset(self.dir_B))    # load images from '/path/to/data/trainB'
@@ -81,8 +83,11 @@ class GananaDataset(Dataset):
     def __getitem__(self, index):
         A_path = self.A_paths[index % self.A_size]  # make sure index is within then range
         V_path = self.V_paths[index % self.V_size]
-        index_B = random.randint(0, self.B_size - 1)
-        B_path = self.B_paths[index_B]
+        if self.train:
+            index_B = random.randint(0, self.B_size - 1)
+            B_path = self.B_paths[index_B]
+        else:
+            B_path = self.B_paths[index % self.B_size]
         A = Image.open(A_path).convert('RGB')
         B = Image.open(B_path).convert('RGB')
         # apply image transformation
@@ -92,8 +97,12 @@ class GananaDataset(Dataset):
             B = self.transform_B(B)
 
         V = np.memmap(V_path, dtype='uint8', mode='r').__array__()
-        V = V.reshape(256, 256, 128)
-        V = np.moveaxis(V, [0, 1, 2], [-2, -1, -3])
+        V = V.reshape(128, 256, 256)
+        V = np.rot90(V, axes=(2,1))
+        V= np.flip(V, 2)
+        
+        #V = V.reshape(256, 256, 128)
+        #V = np.moveaxis(V, [0, 1, 2], [2, 0, 1]) #[-2, -1, -3])
         V = V / 255.0
 
         return {'A': A, 'B': B, 'V': V, 'A_paths': A_path, 'B_paths': B_path}

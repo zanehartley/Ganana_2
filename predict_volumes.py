@@ -1,5 +1,6 @@
 import argparse
 import logging
+from logging import warning as warn
 import os
 import shutil  
 
@@ -50,8 +51,8 @@ def predict_img(net,
     with torch.no_grad():
         output = net(img)
 
-        print("Output Shape: " + str(output.shape))
-        print("Output Max: " + str(output.max()))
+        logging.info("Output Shape: " + str(output.shape))
+        logging.info("Output Max: " + str(output.max()))
 
         '''
         if net.n_classes > 1:
@@ -73,9 +74,9 @@ def predict_img(net,
         #probs = tf(probs.cpu())
         full_mask = probs.squeeze().cpu().numpy()
 
-        print("Full mask shape: "  + str(full_mask.shape))
+        logging.info("Full mask shape: "  + str(full_mask.shape))
 
-    return full_mask > out_threshold
+    return full_mask# > out_threshold
 
 
 def get_args():
@@ -85,7 +86,7 @@ def get_args():
                         metavar='FILE',
                         help="Specify the file in which the model is stored")
     parser.add_argument('--input', '-i', metavar='INPUT', nargs='+',
-                        help='filenames of input images', required=True)
+                        help='filenames of input images')
 
     parser.add_argument('--output', '-o', metavar='INPUT', nargs='+',
                         help='Filenames of ouput images')
@@ -127,7 +128,9 @@ def mask_to_image(mask):
 if __name__ == "__main__":
     args = get_args()
     in_files = args.input
-    out_files = get_output_filenames(args)
+    #out_files = get_output_filenames(args)
+
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
     net = UNet(n_channels=3, n_classes=128)
 
@@ -141,25 +144,27 @@ if __name__ == "__main__":
 
     logging.info("Model loaded !")
 
-    dataset = GananaDataset(data_root)
+    dataset = GananaDataset(data_root, train=False)
     n_test = len(dataset)
 
     for i in range(0, n_test):
-        img = dataset[i]['A']
+        img = dataset[i]['B']
 
         mask = predict_img(net=net,
                             full_img=img,
                             scale_factor=args.scale,
                             out_threshold=args.mask_threshold,
                             device=device)
-
+        logging.info("before: " + str(mask.max()))
+        mask = mask * 255
+        logging.info("after: " + str(mask.max()))
         if not args.no_save:
             out_fn = dir_predictions + str(i) + '_predict.npy'
-            #print("\nMask Shape: " + str(mask.shape))
+            #logging.info("\nMask Shape: " + str(mask.shape))
             np.save(out_fn, mask)
 
             out_gt_fn = dir_predictions + str(i) + '_gt.png'  
-            shutil.copy(dataset[i]['A_paths'], out_gt_fn)
+            shutil.copy(dataset[i]['B_paths'], out_gt_fn)
 
             logging.info("Mask saved to {}".format(out_fn))
             logging.info("Image copied to {}".format(out_gt_fn))
@@ -179,7 +184,7 @@ if __name__ == "__main__":
 
         if not args.no_save:
             out_fn = out_files[i]
-            print("\nMask Shape: " + str(mask.shape))
+            logging.info("\nMask Shape: " + str(mask.shape))
             np.save(out_files[i], mask)
 
             logging.info("Mask saved to {}".format(out_files[i]))
