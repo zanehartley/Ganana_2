@@ -28,29 +28,31 @@ def is_image_file(filename):
 def is_volume_file(filename):
     return any(filename.endswith(extension) for extension in VOL_EXTENSIONS)
 
-def make_dataset(dir, max_dataset_size=float("inf"), vol=False):
+def make_dataset(root, list_file, max_dataset_size=float("inf"), vol=False):
     images = []
-    assert os.path.isdir(dir), '%s is not a valid directory' % dir
+    assert os.path.isfile(list_file), '%s is not a valid file' % dir
+    lines = self.txt_file.readlines()
 
-    for root, _, fnames in os.walk(dir):
-        for fname in fnames:
-            if vol:
-                if is_volume_file(fname):
-                    path = os.path.join(root, fname)
-                    images.append(path)
-            else:
-                if is_image_file(fname):
-                    path = os.path.join(root, fname)
-                    images.append(path)
+    for line in lines:
+        if vol:
+            if is_volume_file(line):
+                path = os.path.join(root, line)
+                images.append(path)
+        else:
+            if is_image_file(fname):
+                path = os.path.join(root, line)
+                images.append(path)
     return images[:min(max_dataset_size, len(images))]
 
 class GananaDataset(Dataset):
     """
     Dataset Structure    
     ├── dataroot/
+    │   ├── trainA.list
     │   ├── trainA/
     |   |   ├── xxx.png
     |   |   ├── xxx.raw
+    │   ├── trainB.list
     │   ├── trainB/
     |   |   ├── xxx.png
     │   ├── testA/
@@ -58,16 +60,12 @@ class GananaDataset(Dataset):
     """
 
     def __init__(self, dataroot, input_nc=3, output_nc=3, train=True):
-        self.dir_A = os.path.join(dataroot, 'trainA')  # create a path '/path/to/data/trainA'
-        self.dir_B = os.path.join(dataroot, 'trainB')  # create a path '/path/to/data/trainB'
-        print(self.dir_A)
-        print(self.dir_B)
 
         self.train = train
 
-        self.A_paths = sorted(make_dataset(self.dir_A))   # load images from '/path/to/data/trainA'
-        self.B_paths = sorted(make_dataset(self.dir_B))    # load images from '/path/to/data/trainB'
-        self.V_paths = sorted(make_dataset(self.dir_A, vol=True))
+        self.A_paths = make_dataset(dataroot, "trainA.list")   # load images from '/path/to/data/trainA'
+        self.B_paths = make_dataset(dataroot, "trainB.list")    # load images from '/path/to/data/trainB'
+        self.V_paths = make_dataset(dataroot, "trainA.list", vol=True)
         self.A_size = len(self.A_paths)  # get the size of dataset A
         self.B_size = len(self.B_paths)  # get the size of dataset B
         self.V_size = len(self.V_paths)
