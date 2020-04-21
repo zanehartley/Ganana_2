@@ -31,15 +31,12 @@ def is_volume_file(filename):
 def make_dataset(root, list_letter, max_dataset_size=float("inf"), vol=False):
     images = []
     list_path = os.path.join(root, (list_letter + ".list"))
-    print(list_path)
     list_file = open(list_path, "r")
     assert os.path.isfile(str(list_path)), '%s is not a valid file' % dir
     lines = list_file.readlines()
-    print(len(lines))
 
     for line in lines:
         line = line.strip('\n')
-        #print(line)
         if vol:
             if is_volume_file(line):
                 path = os.path.join(root, list_letter, line)
