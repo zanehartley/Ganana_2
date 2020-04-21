@@ -28,19 +28,25 @@ def is_image_file(filename):
 def is_volume_file(filename):
     return any(filename.endswith(extension) for extension in VOL_EXTENSIONS)
 
-def make_dataset(root, list_file, max_dataset_size=float("inf"), vol=False):
+def make_dataset(root, list_letter, max_dataset_size=float("inf"), vol=False):
     images = []
-    assert os.path.isfile(list_file), '%s is not a valid file' % dir
-    lines = self.txt_file.readlines()
+    list_path = os.path.join(root, (list_letter + ".list"))
+    print(list_path)
+    list_file = open(list_path, "r")
+    assert os.path.isfile(str(list_path)), '%s is not a valid file' % dir
+    lines = list_file.readlines()
+    print(len(lines))
 
     for line in lines:
+        line = line.strip('\n')
+        #print(line)
         if vol:
             if is_volume_file(line):
-                path = os.path.join(root, line)
+                path = os.path.join(root, list_letter, line)
                 images.append(path)
         else:
-            if is_image_file(fname):
-                path = os.path.join(root, line)
+            if is_image_file(line):
+                path = os.path.join(root, list_letter, line)
                 images.append(path)
     return images[:min(max_dataset_size, len(images))]
 
@@ -63,9 +69,9 @@ class GananaDataset(Dataset):
 
         self.train = train
 
-        self.A_paths = make_dataset(dataroot, "trainA.list")   # load images from '/path/to/data/trainA'
-        self.B_paths = make_dataset(dataroot, "trainB.list")    # load images from '/path/to/data/trainB'
-        self.V_paths = make_dataset(dataroot, "trainA.list", vol=True)
+        self.A_paths = make_dataset(dataroot, "trainA")   # load images from '/path/to/data/trainA'
+        self.B_paths = make_dataset(dataroot, "trainB")    # load images from '/path/to/data/trainB'
+        self.V_paths = make_dataset(dataroot, "trainA", vol=True)
         self.A_size = len(self.A_paths)  # get the size of dataset A
         self.B_size = len(self.B_paths)  # get the size of dataset B
         self.V_size = len(self.V_paths)
