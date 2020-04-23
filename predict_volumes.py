@@ -20,6 +20,7 @@ import time
 timestr = time.strftime("%m%d-%H%M%S")
 
 data_root = '/db/pszaj/proj-3d-plant/volumetric-cyclegan/'
+#data_root = '/db/psyzh/volumetric-cyclegan/'
 dir_predictions = './predictions/'
 try:
     os.mkdir(dir_predictions)   
@@ -159,11 +160,11 @@ if __name__ == "__main__":
         mask = mask * 255
         logging.info("after: " + str(mask.max()))
         if not args.no_save:
-            out_fn = dir_predictions + str(i) + '_predict.npy'
+            out_fn = dir_predictions + str(i) + '.npy'
             #logging.info("\nMask Shape: " + str(mask.shape))
             np.save(out_fn, mask)
 
-            out_gt_fn = dir_predictions + str(i) + '_gt.png'  
+            out_gt_fn = dir_predictions + str(i) + '.png'  
             shutil.copy(dataset[i]['B_paths'], out_gt_fn)
 
             logging.info("Mask saved to {}".format(out_fn))
