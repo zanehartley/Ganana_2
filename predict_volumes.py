@@ -134,8 +134,11 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
     net = UNet(n_channels=3, n_classes=128)
-
     logging.info("Loading model {}".format(args.model))
+
+    if(args.cyclegan):
+        model = cycleGAN(device, name=name, lr=lr, gpu_ids=gpu_ids)
+        model.setup(n_epochs, n_epochs_decay, load_iter=13)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     logging.info(f'Using device {device}')
@@ -148,8 +151,13 @@ if __name__ == "__main__":
     dataset = GananaDataset(data_root, train=False)
     n_test = len(dataset)
 
-    for i in range(0, n_test):
+    for i in range(0, min(250, n_test)):
         img = dataset[i]['B']
+
+        if(args.cyclegan):
+            model.set_input(img)  # unpack data from data loader
+            model.test()           # run inference
+            img = model.get_current_visuals() 
 
         mask = predict_img(net=net,
                             full_img=img,
@@ -169,24 +177,3 @@ if __name__ == "__main__":
 
             logging.info("Mask saved to {}".format(out_fn))
             logging.info("Image copied to {}".format(out_gt_fn))
-            
-
-'''
-    for i, fn in enumerate(in_files):
-        logging.info("\nPredicting image {} ...".format(fn))
-
-        img = Image.open(fn)
-
-        mask = predict_img(net=net,
-                           full_img=img,
-                           scale_factor=args.scale,
-                           out_threshold=args.mask_threshold,
-                           device=device)
-
-        if not args.no_save:
-            out_fn = out_files[i]
-            logging.info("\nMask Shape: " + str(mask.shape))
-            np.save(out_files[i], mask)
-
-            logging.info("Mask saved to {}".format(out_files[i]))
-'''
