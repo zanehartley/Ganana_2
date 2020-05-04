@@ -15,7 +15,6 @@ from torchvision import transforms
 from torch.utils.data import DataLoader, random_split
 
 from models.cyclegan_model import cycleGAN
-from models.unet_model import UNet
 from dataset import GananaDataset
 
 import time
@@ -23,7 +22,6 @@ import time
 timestr = time.strftime("%m%d-%H%M%S")
 
 data_root = '/db/pszaj/proj-3d-plant/volumetric-cyclegan/'
-#data_root = '/db/psyzh/volumetric-cyclegan/'
 dir_predictions = './predictions/'
 
 name = "Ganana_Test"
@@ -38,13 +36,6 @@ try:
     logging.info('Created checkpoint directory')
 except OSError:
     pass
-
-class MyDataParallel(nn.DataParallel):
-    def __getattr__(self, name):
-        try:
-            return super().__getattr__(name)
-        except AttributeError:
-            return getattr(self.module, name)
 
 def predict_img(net,
                 full_img,
@@ -99,21 +90,13 @@ def get_args():
                         help="Specify the file in which the model is stored")
     parser.add_argument('--cyclegan', '-c', metavar='CYCLE', default=False, nargs='+', type=bool,
                         help='Use Cyclegan before Unet: t/f')
-
-    parser.add_argument('--input', '-i', metavar='INPUT', nargs='+', help='filenames of input images')
+                        
+    parser.add_argument('--load_iter', '-l', metavar='LOAD_ITER', default=1, nargs='+', type=int,
+                        help='Iteration to')
 
     parser.add_argument('--num_test', type=int, default=50, help='how many test images to run')
 
     parser.add_argument('--output', '-o', metavar='OUTPUT', nargs='+', help='Filenames of ouput images')
-    parser.add_argument('--no-save', '-n', action='store_true',
-                        help="Do not save the output masks",
-                        default=False)
-    parser.add_argument('--mask-threshold', '-t', type=float,
-                        help="Minimum probability value to consider a mask pixel white",
-                        default=0.5)
-    parser.add_argument('--scale', '-s', type=float,
-                        help="Scale factor for the input images",
-                        default=0.5)
 
     return parser.parse_args()
 
@@ -122,28 +105,17 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
-    in_files = args.input
 
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
-    logging.info(args.cyclegan[0])
-    unet = UNet(n_channels=3, n_classes=128)
-    logging.info("Loading model {}".format(args.model))
-
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-    if(args.cyclegan[0] == True):
-        logging.info("Creating Cyclegan")
-        model = cycleGAN(device, name=name, lr=lr, gpu_ids=gpu_ids, isTrain=False)
-        model.setup(n_epochs, n_epochs_decay, load_iter=15)
-
-    
     logging.info(f'Using device {device}')
-    unet.to(device=device)
-    unet = MyDataParallel(unet)
-    unet.load_state_dict(torch.load(args.model, map_location=device))
 
-    logging.info("Model loaded !")
+    logging.info("Creating Cyclegan")
+    model = cycleGAN(device, name=name, lr=lr, gpu_ids=gpu_ids, isTrain=False)
+    model.setup(n_epochs, n_epochs_decay, load_iter=args.load_iter[0])
+
+    logging.info("Cylegan loaded !")
 
     dataset = GananaDataset(data_root, train=False)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=8, pin_memory=True)
@@ -152,37 +124,31 @@ if __name__ == "__main__":
     for i, data in enumerate(dataloader):
         if i >= args.num_test:  # only apply our model to opt.num_test images.
             break
-        if(args.cyclegan[0] == True):
-            logging.info("Ganana-ising")
-            model.set_input(data)  # unpack data from data loader
-            model.test()           # run inference
-            img = model.fake_B
-            img = img.squeeze(0)
-        else:
-            img = dataset[i]['A']
+        #logging.info("Ganana-ising")
+        model.set_input(data)  # unpack data from data loader
+        model.test()           # run inference
+        img = model.fake_B
+        img = img.squeeze(0)
 
-        mask = predict_img(net=unet,
-                            full_img=img,
-                            scale_factor=args.scale,
-                            out_threshold=args.mask_threshold,
-                            device=device)
+        mask = model.fake_V
+        mask = mask.squeeze().cpu().numpy()
+        
         logging.info("before: " + str(mask.max()))
         mask = mask * 255
         logging.info("after: " + str(mask.max()))
-        if not args.no_save:
-            out_fn = dir_predictions + str(i) + '.npy'
-            out_gt_fn = dir_predictions + str(i) + '.png'   
-            cg_fn = dir_predictions + str(i) + '_cycle.png'
-            #logging.info("\nMask Shape: " + str(mask.shape))
-            np.save(out_fn, mask)
+        out_fn = dir_predictions + str(i) + '.npy'
+        out_gt_fn = dir_predictions + str(i) + '.png'   
+        cg_fn = dir_predictions + str(i) + '_cycle.png'
+        #logging.info("\nMask Shape: " + str(mask.shape))
+        np.save(out_fn, mask)
 
-            imageio.imwrite(cg_fn, np.rollaxis(img.cpu().detach().squeeze().numpy(), 0, 3))
-            imageio.imwrite(out_gt_fn, np.rollaxis(model.real_A.cpu().detach().squeeze().numpy(), 0, 3))
+        imageio.imwrite(cg_fn, np.rollaxis(img.cpu().detach().squeeze().numpy(), 0, 3))
+        imageio.imwrite(out_gt_fn, np.rollaxis(model.real_A.cpu().detach().squeeze().numpy(), 0, 3))
 
-            #shutil.copy(dataset[i]['A_paths'], out_gt_fn)
+        #shutil.copy(dataset[i]['A_paths'], out_gt_fn)
 
-            logging.info("Mask saved to {}".format(out_fn))
-            logging.info("Image copied to {}".format(out_gt_fn))
+        logging.info("Mask saved to {}".format(out_fn))
+        logging.info("Image copied to {}".format(out_gt_fn))
 
 
 '''

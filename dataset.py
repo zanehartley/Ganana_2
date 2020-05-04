@@ -105,8 +105,10 @@ class GananaDataset(Dataset):
         #V = V.reshape(256, 256, 128)
         #V = np.moveaxis(V, [0, 1, 2], [2, 0, 1]) #[-2, -1, -3])
         V = V / 255.0
-
-        return {'A': A, 'B': B, 'V': V, 'A_paths': A_path, 'B_paths': B_path}
+        if self.train:
+            return {'A': A, 'B': B, 'V': V, 'A_paths': A_path, 'B_paths': B_path}
+        else:
+            return {'A': B, 'B': A, 'V': V, 'A_paths': B_path, 'B_paths': A_path}
 
     def __len__(self):
         return max(self.A_size, self.B_size, self.V_size)
