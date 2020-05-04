@@ -99,10 +99,10 @@ class cycleGAN(nn.Module):
             # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
             self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG_A.parameters(), self.netG_B.parameters()), lr=lr, betas=(beta1, 0.999))
             self.optimizer_D = torch.optim.Adam(itertools.chain(self.netD_A.parameters(), self.netD_B.parameters()), lr=lr, betas=(beta1, 0.999))
-            self.optimizer_U = torch.optim.RMSprop(self.netG_A.parameters(), lr=lr, weight_decay=1e-8)
+            #self.optimizer_U = torch.optim.RMSprop(self.netG_A.parameters(), lr=lr, weight_decay=1e-8)
             self.optimizers.append(self.optimizer_G)
             self.optimizers.append(self.optimizer_D)
-            self.optimizers.append(self.optimizer_U)
+            #self.optimizers.append(self.optimizer_U)
 
     def set_input(self, input):
         """Unpack input data from the dataloader and perform necessary pre-processing steps.
@@ -187,7 +187,7 @@ class cycleGAN(nn.Module):
         # Backward cycle loss || G_A(G_B(B)) - B||
         self.loss_cycle_B = self.criterionCycle(self.rec_B, self.real_B) * lambda_B
         # combined loss and calculate gradients
-        self.loss_G = self.loss_G_A + self.loss_G_B + self.loss_cycle_A + self.loss_cycle_B + self.loss_idt_A + self.loss_idt_B + self.loss_VC
+        self.loss_G = self.loss_G_A + self.loss_G_B + self.loss_cycle_A + self.loss_cycle_B + self.loss_idt_A + self.loss_idt_B + self.loss_VC*0.1
         #print(self.loss_G)
         
         self.loss_G.backward(retain_graph=True)
