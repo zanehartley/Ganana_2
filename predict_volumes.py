@@ -21,7 +21,7 @@ import time
 
 timestr = time.strftime("%m%d-%H%M%S")
 
-data_root = '/db/pszaj/proj-3d-plant/volumetric-cyclegan/'
+data_root = '/db/pszaj/proj-3d-plant/cyclegan-fayoum-wbkg/'
 dir_predictions = './predictions/'
 
 name = "Ganana_Test"
