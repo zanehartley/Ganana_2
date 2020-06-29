@@ -58,6 +58,7 @@ class cycleGAN(nn.Module):
         self.direction = direction
         self.continue_train = continue_train
         self.lr_policy = 'linear'
+        self.vc_weight = 0.01
 
         # specify the training losses you want to print out. The training/test scripts will call <BaseModel.get_current_losses>
         self.loss_names = ['D_A', 'G_A', 'cycle_A', 'idt_A', 'D_B', 'G_B', 'cycle_B', 'idt_B', 'VC']
@@ -187,7 +188,7 @@ class cycleGAN(nn.Module):
         # Backward cycle loss || G_A(G_B(B)) - B||
         self.loss_cycle_B = self.criterionCycle(self.rec_B, self.real_B) * lambda_B
         # combined loss and calculate gradients
-        self.loss_G = self.loss_G_A + self.loss_G_B + self.loss_cycle_A + self.loss_cycle_B + self.loss_idt_A + self.loss_idt_B + self.loss_VC*0.1
+        self.loss_G = self.loss_G_A + self.loss_G_B + self.loss_cycle_A + self.loss_cycle_B + self.loss_idt_A + self.loss_idt_B + self.loss_VC*self.vc_weight
         #print(self.loss_G)
         
         self.loss_G.backward(retain_graph=True)
