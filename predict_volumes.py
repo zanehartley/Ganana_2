@@ -21,7 +21,8 @@ import time
 
 timestr = time.strftime("%m%d-%H%M%S")
 
-data_root = '/db/pszaj/proj-3d-plant/cyclegan-fayoum-wbkg/'
+#data_root = '/db/pszaj/proj-3d-plant/cyclegan-fayoum-wbkg/'
+data_root = '/db/psyzh/Ganana_Real/'
 dir_predictions = './predictions/'
 
 name = "Ganana_Test"
@@ -118,7 +119,7 @@ if __name__ == "__main__":
     logging.info("Cylegan loaded !")
 
     dataset = GananaDataset(data_root, train=False)
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=8, pin_memory=True)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=8, pin_memory=True)
     n_test = len(dataset)
 
     for i, data in enumerate(dataloader):
@@ -129,6 +130,10 @@ if __name__ == "__main__":
         model.test()           # run inference
         img = model.fake_B
         img = img.squeeze(0)
+        original_filename = data["A_paths"][0]
+        original_filename = os.path.basename(original_filename)
+        original_filename = os.path.splitext(original_filename)[0]
+        logging.info(original_filename)
 
         mask = model.fake_V
         mask = mask.squeeze().cpu().numpy()
@@ -136,10 +141,10 @@ if __name__ == "__main__":
         logging.info("before: " + str(mask.max()))
         mask = mask * 255
         logging.info("after: " + str(mask.max()))
-        out_fn = dir_predictions + str(i) + '.npy'
-        out_gt_fn = dir_predictions + str(i) + '.png'   
-        cg_fn = dir_predictions + str(i) + '_cycle.png'
-        #logging.info("\nMask Shape: " + str(mask.shape))
+        out_fn = dir_predictions + original_filename + '.npy'
+        out_gt_fn = dir_predictions + original_filename + '.png'   
+        cg_fn = dir_predictions + original_filename + '_cycle.png'
+        logging.info("\nMask Shape: " + str(mask.shape))
         np.save(out_fn, mask)
 
         imageio.imwrite(cg_fn, np.rollaxis(img.cpu().detach().squeeze().numpy(), 0, 3))

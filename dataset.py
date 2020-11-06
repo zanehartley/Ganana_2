@@ -69,6 +69,9 @@ class GananaDataset(Dataset):
         self.A_paths = make_dataset(dataroot, "trainA")   # load images from '/path/to/data/trainA'
         self.B_paths = make_dataset(dataroot, "trainB")    # load images from '/path/to/data/trainB'
         self.V_paths = make_dataset(dataroot, "trainA", vol=True)
+        self.A_paths.sort()
+        self.B_paths.sort()
+        self.V_paths.sort()
         self.A_size = len(self.A_paths)  # get the size of dataset A
         self.B_size = len(self.B_paths)  # get the size of dataset B
         self.V_size = len(self.V_paths)
@@ -78,13 +81,13 @@ class GananaDataset(Dataset):
 
         #input_nc = channels     # get the number of channels of input image
         #output_nc = channels      # get the number of channels of output image
-        self.transform_A = self.get_transform(grayscale=(input_nc == 1))
-        self.transform_B = self.get_transform(grayscale=(output_nc == 1))
+        self.transform_A = self.get_transform_A(grayscale=(input_nc == 1))
+        self.transform_B = self.get_transform_B(grayscale=(output_nc == 1))
 
     def __getitem__(self, index):
         A_path = self.A_paths[index % self.A_size]  # make sure index is within then range
-        V_path = self.V_paths[index % self.V_size]
         if self.train:
+            V_path = self.V_paths[index % self.V_size]
             index_B = random.randint(0, self.B_size - 1)
             B_path = self.B_paths[index_B]
         else:
@@ -96,28 +99,29 @@ class GananaDataset(Dataset):
             A = self.transform_A(A)
         if self.transform_B:
             B = self.transform_B(B)
+        if self.train:
+            V = np.memmap(V_path, dtype='uint8', mode='r').__array__()
+            V = V.reshape(128, 256, 256)
+            V = np.rot90(V, axes=(2,1))
+            V= np.flip(V, 2)
+            V = V / 255.0
 
-        V = np.memmap(V_path, dtype='uint8', mode='r').__array__()
-        V = V.reshape(128, 256, 256)
-        V = np.rot90(V, axes=(2,1))
-        V= np.flip(V, 2)
-        
-        #V = V.reshape(256, 256, 128)
-        #V = np.moveaxis(V, [0, 1, 2], [2, 0, 1]) #[-2, -1, -3])
-        V = V / 255.0
         if self.train:
             return {'A': A, 'B': B, 'V': V, 'A_paths': A_path, 'B_paths': B_path}
         else:
-            return {'A': B, 'B': A, 'V': V, 'A_paths': B_path, 'B_paths': A_path}
+            return {'A': A, 'B': B, 'A_paths': A_path, 'B_paths': B_path}
 
     def __len__(self):
         return max(self.A_size, self.B_size, self.V_size)
 
-    def get_transform(self, grayscale, convert=True):
-
+    def get_transform_A(self, grayscale, convert=True):   
         transform_list = []
+
+        transform_list += [transforms.Resize((256,256))]
+
         if grayscale:
             transform_list.append(transforms.Grayscale(1))
+
         if convert:
             transform_list += [transforms.ToTensor()]
             if grayscale:
@@ -126,4 +130,24 @@ class GananaDataset(Dataset):
                 transform_list += [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
         return transforms.Compose(transform_list)
 
+    def get_transform_B(self, grayscale, convert=True):   
+        transform_list = []
 
+        # Random horizontal flipping
+        transform_list += [transforms.RandomHorizontalFlip()]
+
+        # Random vertical flipping
+        transform_list += [transforms.RandomVerticalFlip()]
+
+        transform_list += [transforms.Resize((256,256))]
+
+        if grayscale:
+            transform_list.append(transforms.Grayscale(1))
+
+        if convert:
+            transform_list += [transforms.ToTensor()]
+            if grayscale:
+                transform_list += [transforms.Normalize((0.5,), (0.5,))]
+            else:
+                transform_list += [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
+        return transforms.Compose(transform_list)

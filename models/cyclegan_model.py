@@ -73,7 +73,7 @@ class cycleGAN(nn.Module):
         if self.isTrain:
             self.model_names = ['G_A', 'G_B', 'D_A', 'D_B']
         else:
-            self.model_names = ['G_A', 'G_B']
+            self.model_names = ['G_A']
 
         # Code (vs. paper): G_A (G), G_B (F), D_A (D_Y), D_B (D_X)
         self.netG_A = cyclegan_parts.define_G(input_nc, output_nc, ngf, 'Ganana', norm,
@@ -94,7 +94,7 @@ class cycleGAN(nn.Module):
             self.fake_B_pool = cyclegan_parts.ImagePool(pool_size)  # create image buffer to store previously generated images
             # define loss functions
             self.criterionGAN = cyclegan_parts.GANLoss(gan_mode).to(self.device)  # define GAN loss.
-            self.criterionUnet = nn.BCELoss()
+            self.criterionUnet = nn.MSELoss()
             self.criterionCycle = torch.nn.L1Loss()
             self.criterionIdt = torch.nn.L1Loss()
             # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
@@ -116,16 +116,18 @@ class cycleGAN(nn.Module):
         AtoB = self.direction == 'AtoB'
         self.real_A = input['A' if AtoB else 'B'].to(self.device)
         self.real_B = input['B' if AtoB else 'A'].to(self.device)
-        self.real_V = input['V'].to(self.device, dtype=torch.float32)
+        if self.isTrain:
+            self.real_V = input['V'].to(self.device, dtype=torch.float32)
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
         #print(self.real_A.shape)
         self.fake_B, self.fake_V = self.netG_A(self.real_A)  # G_A(A)
-        self.rec_A = self.netG_B(self.fake_B)   # G_B(G_A(A))
-        self.fake_A = self.netG_B(self.real_B)  # G_B(B)
-        self.rec_B, self.discarded_V = self.netG_A(self.fake_A)   # G_A(G_B(B))
+        if self.train:
+            self.rec_A = self.netG_B(self.fake_B)   # G_B(G_A(A))
+            self.fake_A = self.netG_B(self.real_B)  # G_B(B)
+            self.rec_B, self.discarded_V = self.netG_A(self.fake_A)   # G_A(G_B(B))
 
     def backward_D_basic(self, netD, real, fake):
         """Calculate GAN loss for the discriminator
@@ -197,8 +199,12 @@ class cycleGAN(nn.Module):
         """Load and print networks; create schedulers"""
 
         if self.isTrain:
+            print(epoch_count)
+            print(n_epochs)
             self.schedulers = [cyclegan_parts.get_scheduler(optimizer, epoch_count, n_epochs, n_epochs_decay) for optimizer in self.optimizers]
         if not self.isTrain or self.continue_train:
+            print(self.isTrain)
+            print(self.continue_train)
             load_suffix = '%d' % load_iter if load_iter > 0 else epoch
             self.load_networks(load_suffix)
         self.print_networks(verbose)
