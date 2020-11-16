@@ -2,6 +2,9 @@ import os.path
 from PIL import Image
 import random
 
+import h5py
+import io
+
 import torch
 from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms as transforms
@@ -9,7 +12,7 @@ import os
 import numpy as np
 
 import skimage
-from skimage import io, transform
+from skimage import transform
 import warnings
 
 IMG_EXTENSIONS = [
@@ -39,11 +42,11 @@ def make_dataset(root, list_letter, max_dataset_size=float("inf"), vol=False):
         line = line.strip('\n')
         if vol:
             if is_volume_file(line):
-                path = os.path.join(root, list_letter, line)
+                path = os.path.join(list_letter, "raw", line)
                 images.append(path)
         else:
             if is_image_file(line):
-                path = os.path.join(root, list_letter, line)
+                path = os.path.join(list_letter, "png", line)
                 images.append(path)
     return images[:min(max_dataset_size, len(images))]
 
@@ -65,7 +68,7 @@ class GananaDataset(Dataset):
     def __init__(self, dataroot, input_nc=3, output_nc=3, train=True):
 
         self.train = train
-
+        self.dataroot = dataroot
         self.A_paths = make_dataset(dataroot, "trainA")   # load images from '/path/to/data/trainA'
         self.B_paths = make_dataset(dataroot, "trainB")    # load images from '/path/to/data/trainB'
         self.V_paths = make_dataset(dataroot, "trainA", vol=True)
@@ -78,6 +81,19 @@ class GananaDataset(Dataset):
         print("\nNumber of Synthetic Images:\t" + str(self.A_size))
         print("\nNumber of Real Images:\t" + str(self.B_size))
         print("\nNumber of Volumes:\t" + str(self.V_size) + "\n")
+
+
+        data = []  
+        group = []
+
+        def func(name, obj):     # function to recursively store all the keys
+            if isinstance(obj, h5py.Dataset):
+                data.append(name)
+            elif isinstance(obj, h5py.Group):
+                group.append(name)
+
+        #self.hf = h5py.File(os.path.join(dataroot, "data.hdf5"), 'r')
+        #self.hf.visititems(func)  # this is the operation we are talking about.
 
         #input_nc = channels     # get the number of channels of input image
         #output_nc = channels      # get the number of channels of output image
@@ -92,15 +108,23 @@ class GananaDataset(Dataset):
             B_path = self.B_paths[index_B]
         else:
             B_path = self.B_paths[index % self.B_size]
-        A = Image.open(A_path).convert('RGB')
-        B = Image.open(B_path).convert('RGB')
+            
+        hf = h5py.File(os.path.join(self.dataroot, "data.hdf5"), 'r')
+
+        A_hdf5 = np.array(hf[A_path])                
+        B_hdf5 = np.array(hf[B_path])
+        V_hdf5 = np.array(hf[V_path])
+
+        A = Image.open(io.BytesIO(A_hdf5)).convert('RGB')
+        B = Image.open(io.BytesIO(B_hdf5)).convert('RGB')
         # apply image transformation
         if self.transform_A:
             A = self.transform_A(A)
         if self.transform_B:
             B = self.transform_B(B)
         if self.train:
-            V = np.memmap(V_path, dtype='uint8', mode='r').__array__()
+            V = V_hdf5
+            #V = np.memmap(V_hdf5, dtype='uint8', mode='r').__array__()
             V = V.reshape(128, 256, 256)
             V = np.rot90(V, axes=(2,1))
             V= np.flip(V, 2)
@@ -110,6 +134,8 @@ class GananaDataset(Dataset):
             return {'A': A, 'B': B, 'V': V, 'A_paths': A_path, 'B_paths': B_path}
         else:
             return {'A': A, 'B': B, 'A_paths': A_path, 'B_paths': B_path}
+
+        hf.close()
 
     def __len__(self):
         return max(self.A_size, self.B_size, self.V_size)
@@ -151,3 +177,7 @@ class GananaDataset(Dataset):
             else:
                 transform_list += [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
         return transforms.Compose(transform_list)
+
+if __name__ == '__main__':
+    gd = GananaDataset("./")
+    print(len(gd))
