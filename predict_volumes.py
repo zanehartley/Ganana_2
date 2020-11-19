@@ -15,7 +15,7 @@ from torchvision import transforms
 from torch.utils.data import DataLoader, random_split
 
 from models.cyclegan_model import cycleGAN
-from dataset_prediction import GananaDataset
+from dataset_predictions import GananaDataset
 
 import time
 

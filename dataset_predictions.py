@@ -113,7 +113,8 @@ class GananaDataset(Dataset):
 
         A_hdf5 = np.array(hf[A_path])                
         B_hdf5 = np.array(hf[B_path])
-        V_hdf5 = np.array(hf[V_path])
+        if self.train:
+            V_hdf5 = np.array(hf[V_path])
 
         A = Image.open(io.BytesIO(A_hdf5)).convert('RGB')
         B = Image.open(io.BytesIO(B_hdf5)).convert('RGB')
