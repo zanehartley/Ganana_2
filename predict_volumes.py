@@ -25,7 +25,7 @@ timestr = time.strftime("%m%d-%H%M%S")
 data_root = '/db/psyzh/Ganana_Real_hdf5/'
 dir_predictions = './predictions/'
 
-name = "Ganana_hdf5"
+name = "Ganana_hdf5_continued"
 lr = 0.0002
 gpu_ids=[0]
 n_epochs = 100
