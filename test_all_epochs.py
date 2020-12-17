@@ -92,7 +92,7 @@ def get_args():
     parser.add_argument('--cyclegan', '-c', metavar='CYCLE', default=False, nargs='+', type=bool,
                         help='Use Cyclegan before Unet: t/f')
                         
-    parser.add_argument('--load_iter', '-l', metavar='LOAD_ITER', default=1, nargs='+', type=int,
+    parser.add_argument('--load_iter', '-l', metavar='LOAD_ITER', default=1, type=int,
                         help='Iteration to')
 
     parser.add_argument('--num_test', type=int, default=50, help='how many test images to run')
@@ -112,51 +112,43 @@ if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     logging.info(f'Using device {device}')
 
-    logging.info("Creating Cyclegan")
-    model = cycleGAN(device, name=name, lr=lr, gpu_ids=gpu_ids, isTrain=False)
-    model.setup(n_epochs, n_epochs_decay, load_iter=args.load_iter[0])
-
-    logging.info("Cylegan loaded !")
-
     dataset = GananaDataset(data_root, train=False)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=8, pin_memory=True)
     n_test = len(dataset)
 
-    for i, data in enumerate(dataloader):
-        if i >= args.num_test:  # only apply our model to opt.num_test images.
-            break
-        #logging.info("Ganana-ising")
-        model.set_input(data)  # unpack data from data loader
-        model.test()           # run inference
-        img = model.fake_B
-        img = img.squeeze(0)
-        original_filename = data["A_paths"][0]
-        original_filename = os.path.basename(original_filename)
-        original_filename = os.path.splitext(original_filename)[0]
-        logging.info(original_filename)
+    logging.info("Creating Model Loop")
+    for e in range(2, args.load_iter, 2):
+        model = cycleGAN(device, name=name, lr=lr, gpu_ids=gpu_ids, isTrain=False)
+        model.setup(n_epochs, n_epochs_decay, load_iter=e)
 
-        mask = model.fake_V
-        mask = mask.squeeze().cpu().numpy()
-        
-        logging.info("before: " + str(mask.max()))
-        mask = mask * 255
-        logging.info("after: " + str(mask.max()))
-        out_fn = dir_predictions + original_filename + '.npy'
-        out_gt_fn = dir_predictions + original_filename + '.png'   
-        cg_fn = dir_predictions + original_filename + '_cycle.png'
-        logging.info("\nMask Shape: " + str(mask.shape))
-        np.save(out_fn, mask)
+        logging.info("Cylegan loaded epoch" + str(e) + "!")
 
-        imageio.imwrite(cg_fn, np.rollaxis(img.cpu().detach().squeeze().numpy(), 0, 3))
-        imageio.imwrite(out_gt_fn, np.rollaxis(model.real_A.cpu().detach().squeeze().numpy(), 0, 3))
+        for i, data in enumerate(dataloader):
+            if i >= args.num_test:  # only apply our model to opt.num_test images.
+                break
+            #logging.info("Ganana-ising")
+            model.set_input(data)  # unpack data from data loader
+            model.test()           # run inference
+            img = model.fake_B
+            img = img.squeeze(0)
+            original_filename = data["A_paths"][0]
+            original_filename = os.path.basename(original_filename)
+            original_filename = os.path.splitext(original_filename)[0]
+            logging.info(original_filename)
 
-        #shutil.copy(dataset[i]['A_paths'], out_gt_fn)
+            mask = model.fake_V
+            mask = mask.squeeze().cpu().numpy()
+            
+            mask = mask * 255
+            out_fn = dir_predictions + original_filename + '.' + str(e) + '.npy'
+            out_gt_fn = dir_predictions + original_filename + '.' + str(e) + '.png'   
+            cg_fn = dir_predictions + original_filename + '.' + str(e) + '_cycle.png'
+            np.save(out_fn, mask)
 
-        logging.info("Mask saved to {}".format(out_fn))
-        logging.info("Image copied to {}".format(out_gt_fn))
+            imageio.imwrite(cg_fn, np.rollaxis(img.cpu().detach().squeeze().numpy(), 0, 3))
+            imageio.imwrite(out_gt_fn, np.rollaxis(model.real_A.cpu().detach().squeeze().numpy(), 0, 3))
 
+            #shutil.copy(dataset[i]['A_paths'], out_gt_fn)
 
-'''
-def mask_to_image(mask):
-    return Image.fromarray((mask * 255).astype(np.uint8))
-'''
+            #logging.info("Mask saved to {}".format(out_fn))
+            #logging.info("Image copied to {}".format(out_gt_fn))

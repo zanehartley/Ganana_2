@@ -58,7 +58,7 @@ class cycleGAN(nn.Module):
         self.direction = direction
         self.continue_train = continue_train
         self.lr_policy = 'linear'
-        self.vc_weight = 0.01
+        self.vc_weight = 1.0
 
         # specify the training losses you want to print out. The training/test scripts will call <BaseModel.get_current_losses>
         self.loss_names = ['D_A', 'G_A', 'cycle_A', 'idt_A', 'D_B', 'G_B', 'cycle_B', 'idt_B', 'VC']
