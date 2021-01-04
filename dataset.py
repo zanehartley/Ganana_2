@@ -35,6 +35,7 @@ def make_dataset(root, list_letter, max_dataset_size=float("inf"), vol=False):
     images = []
     list_path = os.path.join(root, (list_letter + ".list"))
     list_file = open(list_path, "r")
+    print(list_path)
     assert os.path.isfile(str(list_path)), '%s is not a valid file' % dir
     lines = list_file.readlines()
 
@@ -67,6 +68,8 @@ class GananaDataset(Dataset):
 
     def __init__(self, dataroot, input_nc=3, output_nc=3, train=True):
 
+        print("Starting Dataset with HDF5")
+
         self.train = train
         self.dataroot = dataroot
         self.A_paths = make_dataset(dataroot, "trainA")   # load images from '/path/to/data/trainA'
@@ -82,24 +85,6 @@ class GananaDataset(Dataset):
         print("\nNumber of Real Images:\t" + str(self.B_size))
         print("\nNumber of Volumes:\t" + str(self.V_size) + "\n")
 
-
-        data = []  
-        group = []
-
-        def func(name, obj):     # function to recursively store all the keys
-            if isinstance(obj, h5py.Dataset):
-                data.append(name)
-            elif isinstance(obj, h5py.Group):
-                group.append(name)
-
-        #self.hf = h5py.File(os.path.join(dataroot, "data.hdf5"), 'r')
-        #self.hf.visititems(func)  # this is the operation we are talking about.
-
-        #input_nc = channels     # get the number of channels of input image
-        #output_nc = channels      # get the number of channels of output image
-        self.transform_A = self.get_transform_A(grayscale=(input_nc == 1))
-        self.transform_B = self.get_transform_B(grayscale=(output_nc == 1))
-
     def __getitem__(self, index):
         A_path = self.A_paths[index % self.A_size]  # make sure index is within then range
         if self.train:
@@ -111,23 +96,27 @@ class GananaDataset(Dataset):
             
         hf = h5py.File(os.path.join(self.dataroot, "data.hdf5"), 'r')
 
-        A_hdf5 = np.array(hf[A_path])                
-        B_hdf5 = np.array(hf[B_path])
-        V_hdf5 = np.array(hf[V_path])
+        
+        A = torch.tensor(hf[A_path]).float()
+        B = torch.tensor(hf[A_path]).float()
+        V = torch.tensor(hf[V_path]).float()
+        
+        A = A - torch.min(A)
+        A = A / torch.max(A)
+        B = B - torch.min(B)
+        B = B / torch.max(B)
 
-        A = Image.open(io.BytesIO(A_hdf5)).convert('RGB')
-        B = Image.open(io.BytesIO(B_hdf5)).convert('RGB')
+        #A = Image.open(io.BytesIO(A_hdf5)).convert('RGB')
+        #B = Image.open(io.BytesIO(B_hdf5)).convert('RGB')
+        
         # apply image transformation
 
         if self.train:
-            V = V_hdf5
-            if self.transform_A:
-                A, V = self.transform(A, V)
+            A, V = self.transform_AV(A, V)
+            B = self.transform_img(B)
         else:
-            if self.transform_A:
-                A = self.transform_A(A)
-        if self.transform_B:
-            B = self.transform_B(B)
+            A = self.transform_img(A)
+            B = self.transform_img(B)
 
         if self.train:
             return {'A': A, 'B': B, 'V': V, 'A_paths': A_path, 'B_paths': B_path}
@@ -139,92 +128,41 @@ class GananaDataset(Dataset):
     def __len__(self):
         return max(self.A_size, self.B_size, self.V_size)
 
-    def transform(self, image, volume, grayscale=False, convert=True):
+    def transform_AV(self, image, volume, grayscale=False, convert=True):
         
-        volume = volume.reshape(128, 256, 256)
-        image = transforms.functional.resize(image, (256,256))
-
-        if convert:
-            # Transform to tensor
-            image = transforms.functional.to_tensor(image)
-            volume = transforms.functional.to_tensor(volume)
-
-        volume = torch.rot90(volume, 1, [0,1])
-        volume = torch.flip(volume, [0])
-        volume = volume / 255.0
-
-
-        if grayscale:
-            image = transforms.functional.Grayscale(1)
-
-        # Random horizontal flipping
         if random.random() > 0.5:
-            #image = transforms.functional.hflip(image)
             image = torch.flip(image, [1])
             volume = torch.flip(volume, [1])                               
 
-        # Random vertical flipping
         if random.random() > 0.5:
-            #image = transforms.functional.vflip(image)
             image = torch.flip(image, [2])
             volume= torch.flip(volume, [2])                               
-        
+                
         if random.random() > 0.5:
             if random.random() > 0.5:
-                #image = transforms.functional.rotate(image, 90)
                 image = torch.rot90(image, 1, [1,2])
                 volume = torch.rot90(volume, 1, [1,2])
             else:
-                #image = transforms.functional.rotate(image, 270)
                 image = torch.rot90(image, 3, [1,2])
                 volume = torch.rot90(volume, 3, [1,2])
-
-
-        #Normalize
-        if grayscale:
-            image = transforms.functional.normalize(image, (0.5), (0.5))
-        else:
-            image = transforms.functional.normalize(image, (0.5,0.5,0.5), (0.5,0.5,0.5))
-
+     
         return image, volume
 
-    def get_transform_A(self, grayscale, convert=True):   
-        transform_list = []
+    def transform_img(self, image, grayscale=False, convert=True, resize=False, size=(256,256)): 
+        #Should probably finish adding the ability to resize
+        if random.random() > 0.5:
+            image = torch.flip(image, [1])                             
 
-        transform_list += [transforms.Resize((256,256))]
-
-        if grayscale:
-            transform_list.append(transforms.Grayscale(1))
-
-        if convert:
-            transform_list += [transforms.ToTensor()]
-            if grayscale:
-                transform_list += [transforms.Normalize((0.5,), (0.5,))]
+        if random.random() > 0.5:
+            image = torch.flip(image, [2])                              
+                
+        if random.random() > 0.5:
+            if random.random() > 0.5:
+                image = torch.rot90(image, 1, [1,2])
             else:
-                transform_list += [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
-        return transforms.Compose(transform_list)
+                image = torch.rot90(image, 3, [1,2])
+        return image
 
-    def get_transform_B(self, grayscale, convert=True):   
-        transform_list = []
-
-        # Random horizontal flipping
-        transform_list += [transforms.RandomHorizontalFlip()]
-
-        # Random vertical flipping
-        transform_list += [transforms.RandomVerticalFlip()]
-
-        transform_list += [transforms.Resize((256,256))]
-
-        if grayscale:
-            transform_list.append(transforms.Grayscale(1))
-
-        if convert:
-            transform_list += [transforms.ToTensor()]
-            if grayscale:
-                transform_list += [transforms.Normalize((0.5,), (0.5,))]
-            else:
-                transform_list += [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
-        return transforms.Compose(transform_list)
 
 if __name__ == '__main__':
     gd = GananaDataset("./")
