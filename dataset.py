@@ -92,7 +92,9 @@ class GananaDataset(Dataset):
             index_B = random.randint(0, self.B_size - 1)
             B_path = self.B_paths[index_B]
         else:
-            B_path = self.B_paths[index % self.B_size]
+            V_path = self.V_paths[index % self.V_size]
+            index_B = random.randint(0, self.B_size - 1)
+            B_path = self.B_paths[index_B]
             
         hf = h5py.File(os.path.join(self.dataroot, "data.hdf5"), 'r')
 
@@ -100,11 +102,14 @@ class GananaDataset(Dataset):
         A = torch.tensor(hf[A_path]).float()
         B = torch.tensor(hf[A_path]).float()
         V = torch.tensor(hf[V_path]).float()
+
+        hf.close()
         
         A = A - torch.min(A)
         A = A / torch.max(A)
         B = B - torch.min(B)
         B = B / torch.max(B)
+        V = V > 0
 
         #A = Image.open(io.BytesIO(A_hdf5)).convert('RGB')
         #B = Image.open(io.BytesIO(B_hdf5)).convert('RGB')
@@ -122,8 +127,6 @@ class GananaDataset(Dataset):
             return {'A': A, 'B': B, 'V': V, 'A_paths': A_path, 'B_paths': B_path}
         else:
             return {'A': A, 'B': B, 'A_paths': A_path, 'B_paths': B_path}
-
-        hf.close()
 
     def __len__(self):
         return max(self.A_size, self.B_size, self.V_size)

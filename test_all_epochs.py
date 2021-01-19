@@ -15,17 +15,17 @@ from torchvision import transforms
 from torch.utils.data import DataLoader, random_split
 
 from models.cyclegan_model import cycleGAN
-from dataset_predictions import GananaDataset
+from dataset import GananaDataset
 
 import time
 
 timestr = time.strftime("%m%d-%H%M%S")
 
 #data_root = '/db/pszaj/proj-3d-plant/cyclegan-fayoum-wbkg/'
-data_root = '/db/psyzh/Ganana_Real_hdf5/'
+data_root = '/db/psyzh/Ganana_Datasets/20201-01-14_Test/'
 dir_predictions = './predictions/'
 
-name = "Ganana_hdf5"
+name = "04/01"
 lr = 0.0002
 gpu_ids=[0]
 n_epochs = 100
