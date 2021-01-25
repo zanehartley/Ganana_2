@@ -20,12 +20,12 @@ from dataset import GananaDataset
 import time
 
 timestr = time.strftime("%m%d-%H%M%S")
-
+name = "19-01"
 #data_root = '/db/pszaj/proj-3d-plant/cyclegan-fayoum-wbkg/'
-data_root = '/db/psyzh/Ganana_Datasets/20201-01-14_Test/'
-dir_predictions = './predictions/'
+data_root = '/db/psyzh/Ganana_Datasets/2021-01-18_Test_Dataset/'
+dir_predictions = './predictions/' + name + '/'
 
-name = "04/01"
+
 lr = 0.0002
 gpu_ids=[0]
 n_epochs = 100

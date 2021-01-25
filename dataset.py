@@ -109,7 +109,7 @@ class GananaDataset(Dataset):
         A = A / torch.max(A)
         B = B - torch.min(B)
         B = B / torch.max(B)
-        V = V > 0
+        V = (V > 0).float()
 
         #A = Image.open(io.BytesIO(A_hdf5)).convert('RGB')
         #B = Image.open(io.BytesIO(B_hdf5)).convert('RGB')
