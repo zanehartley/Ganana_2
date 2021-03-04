@@ -20,9 +20,9 @@ from dataset import GananaDataset
 import time
 
 timestr = time.strftime("%m%d-%H%M%S")
-name = "19-01"
+name = "less1and3"
 #data_root = '/db/pszaj/proj-3d-plant/cyclegan-fayoum-wbkg/'
-data_root = '/db/psyzh/Ganana_Datasets/2021-01-18_Test_Dataset/'
+data_root = '/db/psyzh/Ganana_Datasets/2021-03-02_Pretty_Pictures/'
 dir_predictions = './predictions/' + name + '/'
 
 
@@ -126,7 +126,7 @@ if __name__ == "__main__":
         for i, data in enumerate(dataloader):
             if i >= args.num_test:  # only apply our model to opt.num_test images.
                 break
-            #logging.info("Ganana-ising")
+
             model.set_input(data)  # unpack data from data loader
             model.test()           # run inference
             img = model.fake_B
@@ -147,8 +147,3 @@ if __name__ == "__main__":
 
             imageio.imwrite(cg_fn, np.rollaxis(img.cpu().detach().squeeze().numpy(), 0, 3))
             imageio.imwrite(out_gt_fn, np.rollaxis(model.real_A.cpu().detach().squeeze().numpy(), 0, 3))
-
-            #shutil.copy(dataset[i]['A_paths'], out_gt_fn)
-
-            #logging.info("Mask saved to {}".format(out_fn))
-            #logging.info("Image copied to {}".format(out_gt_fn))

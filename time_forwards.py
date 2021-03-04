@@ -18,12 +18,12 @@ from models.cyclegan_model import cycleGAN
 from dataset import GananaDataset
 
 import time
+from datetime import datetime
 
 timestr = time.strftime("%m%d-%H%M%S")
 name = "less1and3"
 #data_root = '/db/pszaj/proj-3d-plant/cyclegan-fayoum-wbkg/'
-#data_root = '/db/psyzh/Ganana_Datasets/2021-01-18_Test_Dataset'
-data_root = '/db/psyzh/Ganana_Datasets/2021-03-02_Pretty_Pictures'
+data_root = '/db/psyzh/Ganana_Datasets/2021-01-18_Test_Dataset'
 dir_predictions = './predictions/' + name + "/"
 
 lr = 0.0002
@@ -37,51 +37,6 @@ try:
     logging.info('Created checkpoint directory')
 except OSError:
     pass
-
-def predict_img(net,
-                full_img,
-                device,
-                scale_factor=1,
-                out_threshold=0.5):
-    net.eval()
-    
-    #array = np.asarray(full_img)
-    #img = torch.from_numpy(array)
-    #img = img.permute(2, 0, 1)
-
-    img = full_img.unsqueeze(0)
-    img = img.to(device=device, dtype=torch.float32)
-
-    with torch.no_grad():
-        output = net(img)
-
-        logging.info("Output Shape: " + str(output.shape))
-        logging.info("Output Max: " + str(output.max()))
-
-        '''
-        if net.n_classes > 1:
-            probs = F.softmax(output, dim=1)
-        else:
-            probs = torch.sigmoid(output)
-        '''
-        probs = output.squeeze(0)
-        #probs = probs.squeeze(0)
-
-        tf = transforms.Compose(
-            [
-                transforms.ToPILImage(),
-                #transforms.Resize(full_img.size[1]),
-                transforms.ToTensor()
-            ]
-        )
-
-        #probs = tf(probs.cpu())
-        full_mask = probs.squeeze().cpu().numpy()
-
-        logging.info("Full mask shape: "  + str(full_mask.shape))
-
-    return full_mask# > out_threshold
-
 
 def get_args():
     parser = argparse.ArgumentParser(description='Predict masks from input images',
@@ -127,7 +82,14 @@ if __name__ == "__main__":
             break
         #logging.info("Ganana-ising")
         model.set_input(data)  # unpack data from data loader
-        model.test()           # run inference
+
+        now = datetime.now().time()
+        print("Time before = ", now)
+        for j in range(0, 1000):
+            model.test()           # run inference
+        now = datetime.now().time()
+        print("Time after = ", now)
+
         img = model.fake_B
         img = img.squeeze(0)
         original_filename = data["A_paths"][0]
@@ -147,8 +109,8 @@ if __name__ == "__main__":
         logging.info("\nMask Shape: " + str(mask.shape))
         np.save(out_fn, mask)
 
-        imageio.imwrite(cg_fn, np.rollaxis(img.cpu().detach().squeeze().numpy(), 0, 3))
-        imageio.imwrite(out_gt_fn, np.rollaxis(model.real_A.cpu().detach().squeeze().numpy(), 0, 3))
+        #imageio.imwrite(cg_fn, np.rollaxis(img.cpu().detach().squeeze().numpy(), 0, 3))
+        #imageio.imwrite(out_gt_fn, np.rollaxis(model.real_A.cpu().detach().squeeze().numpy(), 0, 3))
 
         #shutil.copy(dataset[i]['A_paths'], out_gt_fn)
 

@@ -191,7 +191,6 @@ class cycleGAN(nn.Module):
         self.loss_cycle_B = self.criterionCycle(self.rec_B, self.real_B) * lambda_B
         # combined loss and calculate gradients
         self.loss_G = self.loss_G_A + self.loss_G_B + self.loss_cycle_A + self.loss_cycle_B + self.loss_idt_A + self.loss_idt_B + self.loss_VC*self.vc_weight
-        #print(self.loss_G)
         
         self.loss_G.backward(retain_graph=True)
 
@@ -217,7 +216,6 @@ class cycleGAN(nn.Module):
         """
         with torch.no_grad():
             self.forward()
-            #self.compute_visuals()
 
     def print_networks(self, verbose):
         """Print the total number of parameters in the network and (if verbose) network architecture
