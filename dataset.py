@@ -48,7 +48,6 @@ def make_dataset(root, list_letter, max_dataset_size=float("inf"), vol=False):
         else:
             if is_image_file(line):
                 path = os.path.join(list_letter, "png", line)
-                print(path)
                 images.append(path)
     return images[:min(max_dataset_size, len(images))]
 

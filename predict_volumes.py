@@ -20,10 +20,11 @@ from dataset import GananaDataset
 import time
 
 timestr = time.strftime("%m%d-%H%M%S")
-name = "less1and3"
+name = "wrong_b"
 #data_root = '/db/pszaj/proj-3d-plant/cyclegan-fayoum-wbkg/'
 #data_root = '/db/psyzh/Ganana_Datasets/2021-01-18_Test_Dataset'
-data_root = '/db/psyzh/Ganana_Datasets/2021-03-02_Pretty_Pictures'
+data_root = '/db/psyzh/Ganana_Datasets/2021-02-02_Test_Dataset_Scaled'
+#data_root = '/db/psyzh/Ganana_Datasets/2021-03-02_Pretty_Pictures'
 dir_predictions = './predictions/' + name + "/"
 
 lr = 0.0002
@@ -32,11 +33,6 @@ n_epochs = 100
 n_epochs_decay = 100
 batch_size = 1
 
-try:
-    os.mkdir(dir_predictions)   
-    logging.info('Created checkpoint directory')
-except OSError:
-    pass
 
 def predict_img(net,
                 full_img,
@@ -106,6 +102,14 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
+
+    dir_predictions = './predictions/' + name + "/" + str(args.load_iter[0]) + "/"
+    
+    try:
+        os.mkdir(dir_predictions)   
+        logging.info('Created checkpoint directory')
+    except OSError:
+        pass
 
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
