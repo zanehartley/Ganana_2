@@ -15,6 +15,8 @@ import skimage
 from skimage import transform
 import warnings
 
+import time
+
 IMG_EXTENSIONS = [
     '.jpg', '.JPG', '.jpeg', '.JPEG',
     '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP',
@@ -49,6 +51,7 @@ def make_dataset(root, list_letter, max_dataset_size=float("inf"), vol=False):
             if is_image_file(line):
                 path = os.path.join(list_letter, "png", line)
                 images.append(path)
+                print(path)
     return images[:min(max_dataset_size, len(images))]
 
 class GananaDataset(Dataset):
