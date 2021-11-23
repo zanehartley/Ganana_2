@@ -1,0 +1,45 @@
+* Large Pose 3D Face Reconstruction from a Single Image via Direct Volumetric Regression
+
+*Zane K.J. Hartley, Aaron S. Jackson, Michael Pound, Andrew P. French*
+
+
+[[http://zanehartley.co.uk/Pubs/Ganana.png]]
+
+This is an unsupervised domain adaptation network for 3D reconstruction 
+from a single image using a Volumetric Regression Network (VRN). This 
+method approaches the problem of reconstruction as a segmentation problem, 
+producing a 3D volume, spatially aligned with the input image. A mesh can then be
+obtained by taking the isosurface of this volume.
+
+** Software Requirements
+
+A working installation of Pytorch is required. This can be easily
+installed on most platforms from [[https://pytorch.org/get-started/locally/][the Pytorch website]]. You will also require
+a reasonable CUDA capable GPU.
+
+Quick overview of requirements:
+
+- Pytorch (+ nn, cunn, cudnn, image).
+- NVIDIA GPU, with a working CUDA and CuDNN.
+
+Please be wary of the version numbers for CUDA, CuDNN and Python.
+
+** Getting Started
+
+*** Running with Python
+
+*** Available Options
+
+
+* Paper Citation
+
+#+BEGIN_SRC
+@article{hartley2021ganana,
+  title={GANana: Unsupervised Domain Adaptation for Volumetric Regression of Fruit},
+  author={Hartley, Zane KJ and Jackson, Aaron S and Pound, Michael and French, Andrew P},
+  journal={Plant Phenomics},
+  volume={2021},
+  year={2021},
+  publisher={AAAS}
+}
+#+END_SRC
