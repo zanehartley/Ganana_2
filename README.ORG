@@ -11,7 +11,7 @@ method approaches the problem of reconstruction as a segmentation problem,
 producing a 3D volume, spatially aligned with the input image. A mesh can then be
 obtained by taking the isosurface of this volume.
 
-* Please note, this repo is currently a work in progress.  Code used has been provided, but further work to improve usability still needs to be carried out. We appreciate your patience. * 
+/Please note, this repo is currently a work in progress.  Code used has been provided, but further work to improve usability still needs to be carried out. We appreciate your patience./
 
 ** Software Requirements
 
